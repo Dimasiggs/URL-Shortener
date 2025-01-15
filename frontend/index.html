@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Сервис сокращения ссылок</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center">Сокращение ссылок</h1>
+        <form id="linkForm">
+            <div class="form-group">
+                <label for="urlInput">Введите URL:</label>
+                <input type="url" class="form-control" id="urlInput" placeholder="https://example.com" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Сократить ссылку</button>
+        </form>
+        <div id="result" class="mt-4"></div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
