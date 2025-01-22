@@ -1,4 +1,5 @@
 # Simple URL shortener
+Convert long URLs into short, shareable links.
 
 ## Running the application
 1. Start the server:
