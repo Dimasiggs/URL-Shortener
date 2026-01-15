@@ -1,0 +1,11 @@
+.env
+.env.local
+.git
+.gitignore
+README.md
+.dockerignore
+*.pyc
+__pycache__
+.pytest_cache
+.coverage
+.nyc_output
