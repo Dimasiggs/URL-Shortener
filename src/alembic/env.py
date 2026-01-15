@@ -29,10 +29,6 @@ alembic_url = os.getenv("ALEMBIC_DATABASE_URL") or os.getenv("DATABASE_URL")
 if not alembic_url:
     raise RuntimeError("No ALEMBIC_DATABASE_URL or DATABASE_URL provided")
 
-print("ALEMBIC_DATABASE_URL =", os.getenv("ALEMBIC_DATABASE_URL"))
-print("DATABASE_URL =", os.getenv("DATABASE_URL"))
-print("USING_URL =", alembic_url)
-
 config.set_main_option("sqlalchemy.url", alembic_url + "?async_fallback=true")
 
 # Interpret the config file for Python logging.
