@@ -1,0 +1,164 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Pipenv
+Pipfile.lock
+
+# Poetry
+poetry.lock
+
+# pdm
+.pdm.toml
+.pdm-python
+.pdm-build/
+
+# PEP 582; used by e.g. github.com/David-O-Toole/projects
+**/.eggs/
+**/src/*.egg-info/
+dist/
+build/
+eggs/
+
+# PyInstaller
+#  Usually these files are written by a python script from a template
+#  before PyInstaller builds the exe, so as to inject date/other infos into it.
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+.pytest_cache/
+
+# Translations
+*.mo
+*.pot
+
+# Django stuff:
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+media/
+
+# Flask stuff:
+instance/
+.webassets-cache
+
+# Scrapy stuff:
+.scrapy
+
+# Sphinx documentation
+docs/_build/
+
+# PyBuilder
+target/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+*.ipynb_checkpoints
+
+# pyenv
+.python-version
+
+# VS Code
+.vscode/
+.cursor/
+
+# JetBrains / IntelliJ
+.idea/
+*.iml
+
+# Logs
+logs/
+*.log
+logs.json
+
+# Alembic / Migrations
+alembic.ini
+migrations/versions/*.py
+migrations/env.py  # Если кастомный
+
+# FastAPI / Pydantic
+*.pydantic/
+
+# Docker
+.dockerignore
+Dockerfile.*  # Локальные варианты
+**/.docker/
+
+# Docker volumes / data
+volumes/
+data/
+postgres_data/
+pgdata/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+.env.*.example
+
+# Secrets
+secrets/
+*.key
+*.pem
+*.crt
+*.p12
+*.pfx
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Thumbnails
+Thumbs.db
+ehthumbs.db
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# IDE
+.vscode/settings.json
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/dictionaries/
+
+# OS generated files
+.DS_Store?
+.DS_Store?S
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+*.swp
+*~.nib
+local_settings.py
