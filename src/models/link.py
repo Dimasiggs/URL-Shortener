@@ -8,7 +8,7 @@ from sqlalchemy.orm import Mapped, mapped_column
 
 from src.db.base_class import Base
 from src.schemas.user import UserSchemaBase as UserSchema
-
+from src.schemas.link import LinkSchemaFull
 
 
 
@@ -33,6 +33,12 @@ class Link(Base):
         unique=True,
         index=True
     )
+
+    owner_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True),
+        index=True,
+        nullable=False
+    )
     
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
@@ -40,15 +46,9 @@ class Link(Base):
         nullable=False
     )
     
-    expired_at: Mapped[Optional[datetime]] = mapped_column(
+    expires_at: Mapped[Optional[datetime]] = mapped_column(
         DateTime(timezone=True),
         nullable=True
-    )
-    
-    is_deleted: Mapped[bool] = mapped_column(
-        Boolean,
-        default=False,
-        nullable=False
     )
 
     is_active: Mapped[bool] = mapped_column(
@@ -57,9 +57,14 @@ class Link(Base):
         nullable=False
     )
 
-    # def to_read_model(self) -> UserSchema:
-    #     """Возвращает UserSchema из модели."""
-    #     return UserSchema(
-    #         id=self.id,
-    #         nickname=self.nickname,
-    #     )
+    def to_read_model(self) -> LinkSchemaFull:
+        """Возвращает LinkSchemaFull из модели."""
+        return LinkSchemaFull(
+            id=self.id,
+            original_url=self.original_url,
+            short_code=self.short_code,
+            owner_id=self.owner_id,
+            created_at=self.created_at,
+            expires_at=self.expires_at,
+            is_active=self.is_active
+        )
