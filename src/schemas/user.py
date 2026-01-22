@@ -9,7 +9,7 @@ class UserSchemaBase(BaseModel):
     """Базовая схема для пользователей, от которой наследуется большинство схем."""
 
     id: UUID
-    email: str
+    nickname: str
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -17,5 +17,18 @@ class UserSchemaBase(BaseModel):
 class UserSchemaAdd(BaseModel):
     """Схема для добавления пользователей."""
 
-    email: str
+    nickname: str
     hashed_password: str
+
+
+class UserRegisterRequest(BaseModel):
+    """Схема для запроса на добавление пользователей."""
+    
+    nickname: str
+    password: str
+
+
+class UserRegisterResponse(BaseModel):
+    """Схема для ответа на запрос на добавление пользователей."""
+    token: str
+    refresh_token: str
