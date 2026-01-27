@@ -1,7 +1,7 @@
 """Схемы для пользователя."""
 
 from datetime import datetime
-from typing import Optional
+from typing import List, Optional
 from uuid import UUID
 from pydantic import BaseModel
 from pydantic.config import ConfigDict
@@ -39,3 +39,15 @@ class LinkSchemaFull(LinkSchemaBase):
     created_at: datetime
     expires_at: Optional[datetime] = None
     is_active: bool
+
+
+class LinkResponse(BaseModel):
+    id: str
+    short_code: str
+    original_url: str
+    clicks: int
+    created_at: str  # ISO формат
+
+class LinksListResponse(BaseModel):
+    items: List[LinkSchemaFull]
+    total: int

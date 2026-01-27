@@ -1,7 +1,14 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy import select
+from uuid import UUID
+from typing import List
+from sqlalchemy.ext.asyncio import AsyncSession
+from fastapi import Depends
+
+from src.db.base_class import get_session
 from src.models.link import Link
-from src.schemas.link import LinkSchemaAdd
+from src.schemas.link import LinkSchemaAdd, LinkSchemaFull, LinkResponse
 from src.core.error import DuplicateCodeError
 from src.repositories.link_port import LinkRepositoryPort
 
@@ -10,7 +17,7 @@ class LinkRepository(LinkRepositoryPort):
     def __init__(self, session: AsyncSession):
         self.session = session
 
-    async def create(self, link: LinkSchemaAdd) -> Link:
+    async def create(self, link: LinkSchemaAdd) -> LinkSchemaFull:
         db_link = Link(
             original_url=link.original_url,
             short_code=link.short_code,
@@ -25,3 +32,27 @@ class LinkRepository(LinkRepositoryPort):
         except IntegrityError:
             await self.session.rollback()
             raise DuplicateCodeError("Code already exists")
+
+    async def get_by_user_id(self, user_id: UUID, offset: int = 0, limit: int = None) -> List[LinkSchemaFull]:
+        query = (
+            select(Link)
+            .where(Link.owner_id == user_id)
+            .offset(offset)
+            .limit(limit)
+        )
+        result = await self.session.execute(query)
+        links = result.scalars().all()
+        return [link.to_read_model() for link in links]
+    
+    async def get_by_short_code(self, short_code: str) -> LinkResponse:
+        query = (
+            select(Link)
+            .where(Link.short_code == short_code)
+        )
+        result = await self.session.execute(query)
+        link = result.scalars().one()
+        return link.to_read_model()
+
+
+def get_link_repository(db: AsyncSession = Depends(get_session)) -> LinkRepository:
+    return LinkRepository(db)

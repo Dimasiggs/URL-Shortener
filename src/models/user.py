@@ -27,14 +27,15 @@ class User(Base):
         index=True
     )
 
-    email: Mapped[Optional[str]] = mapped_column(
+    nickname: Mapped[Optional[str]] = mapped_column(
         String(300),
-        nullable=False
+        nullable=False,
+        unique=True
     )
 
     hashed_password: Mapped[Optional[str]] = mapped_column(
         String(300),
-        nullable=True
+        nullable=False
     )
 
     role: Mapped[Optional[str]] = mapped_column(

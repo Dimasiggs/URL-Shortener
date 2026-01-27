@@ -64,7 +64,7 @@
             align-items: center;
         }
 
-        .user-email {
+        .user-nickname {
             font-size: 14px;
             color: var(--text-gray);
         }
@@ -499,8 +499,8 @@
             
             <form id="authForm">
                 <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="email" id="email" name="email" required>
+                    <label for="nickname">Nickname</label>
+                    <input type="nickname" id="nickname" name="nickname" required>
                 </div>
                 <div class="form-group">
                     <label for="password">Пароль</label>
@@ -525,7 +525,7 @@
                 <div class="header-content">
                     <div class="logo">🔗 URL Shortener</div>
                     <div class="user-info">
-                        <span class="user-email" id="currentUserEmail"></span>
+                        <span class="user-nickname" id="currentUserNickname"></span>
                         <button class="btn btn-secondary btn-small" onclick="logout()">Выход</button>
                     </div>
                 </div>
@@ -666,7 +666,7 @@
 
         async function handleAuth(e) {
             e.preventDefault();
-            const email = document.getElementById('email').value;
+            const nickname = document.getElementById('nickname').value;
             const password = document.getElementById('password').value;
             const endpoint = authMode === 'login' ? '/auth/login' : '/auth/register';
 
@@ -674,7 +674,7 @@
                 const response = await fetch(`${API_BASE_URL}${endpoint}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email, password })
+                    body: JSON.stringify({ nickname, password })
                 });
 
                 const data = await response.json();
@@ -701,7 +701,7 @@
                 if (!response.ok) throw new Error('Unauthorized');
 
                 currentUser = await response.json();
-                document.getElementById('currentUserEmail').textContent = currentUser.email;
+                document.getElementById('currentUserNickname').textContent = currentUser.nickname;
             } catch (error) {
                 logout();
             }

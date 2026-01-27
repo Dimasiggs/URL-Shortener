@@ -14,8 +14,6 @@ from src.api.api_routers import all_routers as api_routers
 # settings = Settings()
 
 # Логгирование
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger("Whisp_server")
 
 app = FastAPI(
     title="settings.APP_TITLE", version="settings.APP_VERSION",
@@ -42,6 +40,21 @@ def root():
 for router in api_routers:
     app.include_router(router, prefix="/api/v1")
 
+
+from fastapi.responses import RedirectResponse
+from fastapi import Depends
+from src.services.link import get_link_service, LinkServicePort
+from src.schemas.link import LinkResponse
+
+@app.get("/r/{short_code}")
+async def redirect_to_original(
+    short_code: str,
+    link_service: LinkServicePort = Depends(get_link_service)
+    ):
+    # Получаем оригинальную ссылку из репозитория
+    link: LinkResponse = await link_service.get_by_short_code(short_code)
+    original_url = link.original_url
+    return RedirectResponse(url=original_url, status_code=302)
 
 
 app.mount("/", StaticFiles(directory="src/static"), name="static")

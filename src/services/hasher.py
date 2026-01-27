@@ -1,11 +1,14 @@
 from hashlib import sha256
-from src.services.hasher_port import HasherPort
 from os import urandom, getenv
 
+from src.core.decorators import singleton
+from src.services.hasher_port import HasherPort
 
+
+@singleton
 class Hasher(HasherPort):
-    def __init__(self):
-        self.pepper = getenv("PEPPER", "lol") # TODO: Переделать на получение из Settings()
+    def __init__(self, pepper):
+        self.pepper = pepper # TODO: Переделать на получение из Settings()
     
     def encode(self, text: str, salt: str) -> str:
         data = text + salt + self.pepper
@@ -20,3 +23,10 @@ class Hasher(HasherPort):
     @property
     def salt(self) -> str:
         return urandom(self.salt_len).hex()
+
+
+
+async def get_hasher() -> HasherPort:
+    pepper = getenv("PEPPER", "lol")
+    return Hasher(pepper)
+
