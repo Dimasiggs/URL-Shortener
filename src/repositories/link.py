@@ -8,7 +8,7 @@ from fastapi import Depends
 
 from src.db.base_class import get_session
 from src.models.link import Link
-from src.schemas.link import LinkSchemaAdd, LinkSchemaFull, LinkResponse
+from src.schemas.link import LinkSchemaAdd, LinkSchemaFull, LinkResponse, LinksListResponse
 from src.core.error import DuplicateCodeError
 from src.repositories.link_port import LinkRepositoryPort
 
@@ -33,7 +33,7 @@ class LinkRepository(LinkRepositoryPort):
             await self.session.rollback()
             raise DuplicateCodeError("Code already exists")
 
-    async def get_by_user_id(self, user_id: UUID, offset: int = 0, limit: int = None) -> List[LinkSchemaFull]:
+    async def get_by_user_id(self, user_id: UUID, offset: int = 0, limit: int = None) -> LinksListResponse:
         query = (
             select(Link)
             .where(Link.owner_id == user_id)
@@ -41,8 +41,10 @@ class LinkRepository(LinkRepositoryPort):
             .limit(limit)
         )
         result = await self.session.execute(query)
-        links = result.scalars().all()
-        return [link.to_read_model() for link in links]
+        items = result.scalars().all()
+        links = LinksListResponse(items=[i.to_read_model() for i in items], total=len(items))
+
+        return links
     
     async def get_by_short_code(self, short_code: str) -> LinkResponse:
         query = (

@@ -47,7 +47,7 @@ class LinkService(LinkServicePort):
         offset = limit * page
         links = await self.repository.get_by_user_id(user_id, offset, limit)
 
-        return LinksListResponse(items=links, total=len(links))
+        return links
     
     async def get_by_short_code(self, short_code: str) -> LinkResponse:
         try:    

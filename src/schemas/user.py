@@ -9,7 +9,6 @@ class UserSchemaBase(BaseModel):
     """Базовая схема для пользователей, от которой наследуется большинство схем."""
 
     id: UUID
-    nickname: str
 
     model_config = ConfigDict(from_attributes=True)
 
