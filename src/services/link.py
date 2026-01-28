@@ -28,7 +28,7 @@ class LinkService(LinkServicePort):
         self.code_generator = code_generator
         self.repository = repository
 
-    async def create(self, link_schema: LinkSchemaAdd) -> LinksListResponse:
+    async def create(self, link_schema: LinkSchemaAdd) -> LinkResponse:
         while 1:
             link_add = Link(
                 original_url=link_schema.original_url,
@@ -43,7 +43,7 @@ class LinkService(LinkServicePort):
             except Exception:
                 continue
     
-    async def get_by_user_id(self, user_id: UUID, limit: int = 1, page: int = 0) -> LinksListResponse:
+    async def get_by_user_id(self, user_id: UUID, limit: int = None, page: int = 0) -> LinksListResponse:
         offset = limit * page
         links = await self.repository.get_by_user_id(user_id, offset, limit)
 

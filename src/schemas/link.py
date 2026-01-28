@@ -20,8 +20,22 @@ class LinkSchemaAdd(BaseModel):
     """Схема для добавления ссылок."""
 
     original_url: str
-    # short_code: str
+    short_code: str
     owner_id: UUID
+    expires_at: Optional[datetime] = None
+
+    def check_expiration(self) -> bool:
+        """Проверяет, истекла ли ссылка."""
+        if self.expires_at is None:
+            return False
+        return datetime.utcnow() > self.expires_at
+
+
+class LinkSchemaAddResponse(BaseModel):
+    """Схема для добавления ссылок."""
+
+    original_url: str
+    short_code: str
     expires_at: Optional[datetime] = None
 
     def check_expiration(self) -> bool:

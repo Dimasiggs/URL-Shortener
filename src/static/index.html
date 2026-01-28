@@ -552,12 +552,12 @@
 
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="customSlug">Пользовательский слаг (опционально)</label>
+                            <label for="shortCode">Пользовательский слаг (опционально)</label>
                             <input 
                                 type="text" 
-                                id="customSlug" 
-                                name="customSlug" 
-                                placeholder="my-custom-slug"
+                                id="shortCode" 
+                                name="shortCode" 
+                                placeholder="my-custom-short-code"
                             >
                         </div>
                         <div class="form-group">
@@ -723,7 +723,7 @@
         async function handleCreateLink(e) {
             e.preventDefault();
             const originalUrl = document.getElementById('originalUrl').value;
-            const customSlug = document.getElementById('customSlug').value || null;
+            const shortCode = document.getElementById('shortCode').value || null;
             const expiresAt = document.getElementById('expiresAt').value || null;
 
             try {
@@ -735,7 +735,7 @@
                     },
                     body: JSON.stringify({
                         original_url: originalUrl,
-                        custom_slug: customSlug,
+                        short_code: shortCode,
                         expires_at: expiresAt
                     })
                 });
