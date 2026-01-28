@@ -40,22 +40,9 @@ def root():
 for router in api_routers:
     app.include_router(router, prefix="/api/v1")
 
+from src.api.redirect import router as router_redirect
 
-from fastapi.responses import RedirectResponse
-from fastapi import Depends
-from src.services.link import get_link_service, LinkServicePort
-from src.schemas.link import LinkResponse
-
-@app.get("/r/{short_code}")
-async def redirect_to_original(
-    short_code: str,
-    link_service: LinkServicePort = Depends(get_link_service)
-    ):
-    # Получаем оригинальную ссылку из репозитория
-    link: LinkResponse = await link_service.get_by_short_code(short_code)
-    original_url = link.original_url
-    return RedirectResponse(url=original_url, status_code=302)
-
+app.include_router(router_redirect)
 
 app.mount("/", StaticFiles(directory="src/static"), name="static")
 
