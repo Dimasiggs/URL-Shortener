@@ -20,6 +20,7 @@ class UserSchemaAdd(BaseModel):
     hashed_password: str
 
 
+# TODO: Rename
 class UserRegisterRequest(BaseModel):
     """Схема для запроса на добавление пользователей."""
     

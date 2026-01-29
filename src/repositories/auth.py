@@ -31,7 +31,11 @@ class AuthRepository(AuthRepositoryPort):
             raise UserAlreadyExistsError("User already exists")
     
     def login(self, user: UserSchemaAdd) -> UserRegisterResponse:
-        ...
+        db_user = User(
+            nickname=user.nickname,
+            hashed_password=user.hashed_password
+        )
+        self.session.add(db_user)
 
 
 async def get_auth_repository(db: AsyncSession = Depends(get_session)) -> AuthRepositoryPort:

@@ -42,7 +42,7 @@
 - `GET /links/{id}/clicks` — ?page, ?limit → список кликов (paginated). [roadmap](https://roadmap.sh/backend/project-ideas)
 
 ### Редирект (public)
-- `GET /{short_code}` — redirect to original_url, лог клика (async). [roadmap](https://roadmap.sh/backend/project-ideas)
+- `GET /r/{short_code}` — redirect to original_url, лог клика (async). [roadmap](https://roadmap.sh/backend/project-ideas)
 
 ### Админ
 - `GET /admin/links` — все ссылки (paginated). [roadmap](https://roadmap.sh/backend/project-ideas)
