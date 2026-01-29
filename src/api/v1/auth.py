@@ -34,55 +34,9 @@ async def register(
         )
 
 
-
-
-# from fastapi import APIRouter, Depends, HTTPException, status
-# from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-# from pydantic import BaseModel
-# from typing import Optional
-# from jose import jwt, JWTError  # или твоя библиотека для JWT
-
-# from src.models.user import User
-
-# security = HTTPBearer()
-
-# async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security)) -> User:
-#     try:
-#         payload = jwt.decode(credentials.credentials, "SECRET_KEY", algorithms=["HS256"])  # твои настройки
-#         user_id: Optional[int] = payload.get("sub")
-#         print(payload)
-#         if user_id is None:
-#             raise HTTPException(status_code=401, detail="Invalid token")
-#         # Здесь загрузи user из БД: user = await auth_repo.get_by_id(user_id)
-#         user = User(id=user_id, nickname="test_user")  # заглушка
-#         return user
-#     except JWTError:
-#         raise HTTPException(status_code=401, detail="Invalid token")
-
-
-# class UserMeResponse(BaseModel):
-#     id: int
-#     nickname: str
-
-
-# @router.get("/me", response_model=UserMeResponse, status_code=status.HTTP_200_OK)
-# async def me(
-#     current_user: User = Depends(get_current_user)
-# ):
-#     """Получить профиль текущего пользователя (заглушка)."""
-#     return UserMeResponse(
-#         id=current_user.id,
-#         nickname=current_user.nickname  # из БД или сессии
-#     )
-
-
-
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from pydantic import BaseModel
-from typing import Optional
-from jose import jwt, JWTError  # или твоя библиотека для JWT
-from src.models.user import User
 
 security = HTTPBearer()
 
