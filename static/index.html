@@ -1,0 +1,1005 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Сервис коротких ссылок</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #0284c7;
+            --primary-dark: #0369a1;
+            --success: #16a34a;
+            --danger: #dc2626;
+            --bg-light: #f8fafc;
+            --bg-white: #ffffff;
+            --text-dark: #1e293b;
+            --text-gray: #64748b;
+            --border: #e2e8f0;
+            --shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background: var(--bg-white);
+            border-bottom: 1px solid var(--border);
+            padding: 20px 0;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .user-info {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .user-nickname {
+            font-size: 14px;
+            color: var(--text-gray);
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-success {
+            background-color: var(--success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background-color: #15803d;
+        }
+
+        .btn-danger {
+            background-color: var(--danger);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: #b91c1c;
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-dark);
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--bg-light);
+        }
+
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+            font-size: 14px;
+            color: var(--text-dark);
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: border-color 0.3s ease;
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.1);
+        }
+
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        .auth-container {
+            max-width: 400px;
+            margin: 60px auto;
+            background: var(--bg-white);
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .auth-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .toggle-auth {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            color: var(--text-gray);
+        }
+
+        .toggle-auth a {
+            color: var(--primary);
+            cursor: pointer;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .toggle-auth a:hover {
+            text-decoration: underline;
+        }
+
+        .alert {
+            padding: 12px 15px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .alert.show {
+            display: block;
+        }
+
+        .alert-danger {
+            background-color: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+
+        .alert-success {
+            background-color: #dcfce7;
+            color: #166534;
+            border: 1px solid #86efac;
+        }
+
+        .card {
+            background: var(--bg-white);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--text-dark);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .form-row-full {
+            grid-column: 1 / -1;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+            margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        thead {
+            background-color: var(--bg-light);
+            border-bottom: 2px solid var(--border);
+        }
+
+        th {
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        tr:hover {
+            background-color: var(--bg-light);
+        }
+
+        .short-code {
+            font-family: 'Courier New', monospace;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 6px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--bg-white);
+            border-radius: 8px;
+            padding: 30px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 15px;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--text-gray);
+        }
+
+        .modal-close:hover {
+            color: var(--text-dark);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-box {
+            background-color: var(--bg-light);
+            padding: 15px;
+            border-radius: 6px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--text-gray);
+            margin-top: 5px;
+            text-transform: uppercase;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 4px;
+            height: 4px;
+            background-color: var(--text-gray);
+            border-radius: 50%;
+            animation: loading 1.5s infinite;
+        }
+
+        @keyframes loading {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .mt-10 {
+            margin-top: 10px;
+        }
+
+        .mt-20 {
+            margin-top: 20px;
+        }
+
+        .error-text {
+            color: var(--danger);
+            font-size: 12px;
+            margin-top: 4px;
+        }
+
+        .success-text {
+            color: var(--success);
+            font-size: 12px;
+            margin-top: 4px;
+        }
+
+        .copy-btn {
+            background: var(--bg-light);
+            border: 1px solid var(--border);
+            padding: 4px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .copy-btn:hover {
+            background-color: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .pagination {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .pagination button {
+            padding: 8px 12px;
+            border: 1px solid var(--border);
+            background: var(--bg-white);
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        .pagination button.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .pagination button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-gray);
+        }
+
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            table {
+                font-size: 12px;
+            }
+
+            th, td {
+                padding: 8px;
+            }
+
+            .modal-content {
+                padding: 20px;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Auth Page -->
+    <div id="authPage" class="page active">
+        <div class="auth-container">
+            <div class="auth-title" id="authTitle">Вход</div>
+            <div id="authAlert" class="alert"></div>
+            
+            <form id="authForm">
+                <div class="form-group">
+                    <label for="nickname">Nickname</label>
+                    <input type="nickname" id="nickname" name="nickname" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Пароль</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">
+                    <span id="authSubmitText">Войти</span>
+                </button>
+            </form>
+
+            <div class="toggle-auth">
+                <span id="toggleText">Нет аккаунта?</span>
+                <a onclick="toggleAuthMode()">Зарегистрироваться</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main App Page -->
+    <div id="appPage" class="page">
+        <header>
+            <div class="container">
+                <div class="header-content">
+                    <div class="logo">🔗 URL Shortener</div>
+                    <div class="user-info">
+                        <span class="user-nickname" id="currentUserNickname"></span>
+                        <button class="btn btn-secondary btn-small" onclick="logout()">Выход</button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="container">
+            <!-- Create Link Section -->
+            <div class="card">
+                <div class="card-title">📝 Создать короткую ссылку</div>
+                <div id="createAlert" class="alert"></div>
+
+                <form id="createLinkForm">
+                    <div class="form-group">
+                        <label for="originalUrl">Исходный URL</label>
+                        <input 
+                            type="url" 
+                            id="originalUrl" 
+                            name="originalUrl" 
+                            placeholder="https://example.com/very/long/url" 
+                            required
+                        >
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="shortCode">Пользовательский слаг (опционально)</label>
+                            <input 
+                                type="text" 
+                                id="shortCode" 
+                                name="shortCode" 
+                                placeholder="my-custom-short-code"
+                            >
+                        </div>
+                        <div class="form-group">
+                            <label for="expiresAt">Срок действия (опционально)</label>
+                            <input 
+                                type="datetime-local" 
+                                id="expiresAt" 
+                                name="expiresAt"
+                            >
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">
+                        Создать ссылку
+                    </button>
+                </form>
+
+                <div id="createdLink" style="margin-top: 20px; display: none;">
+                    <div style="background-color: var(--bg-light); padding: 15px; border-radius: 6px;">
+                        <div style="font-size: 12px; color: var(--text-gray); margin-bottom: 8px;">Созданная ссылка:</div>
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <code id="shortUrl" style="flex: 1; background: white; padding: 10px; border-radius: 4px; font-family: monospace; overflow: hidden; text-overflow: ellipsis;"></code>
+                            <button type="button" class="copy-btn" onclick="copyToClipboard()">Копировать</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Links List Section -->
+            <div class="card">
+                <div class="card-title">📊 Мои ссылки</div>
+                <div id="linksAlert" class="alert"></div>
+
+                <div id="linksLoading" class="text-center mt-20" style="display: none;">
+                    Загрузка<span class="loading"></span>
+                </div>
+
+                <div id="linksContainer">
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📭</div>
+                        <p>У вас нет ссылок. Создайте первую!</p>
+                    </div>
+                </div>
+
+                <div id="linksPagination" class="pagination" style="display: none;"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats Modal -->
+    <div id="statsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">📈 Статистика ссылки</h2>
+                <button class="modal-close" onclick="closeStatsModal()">✕</button>
+            </div>
+
+            <div id="statsAlert" class="alert"></div>
+
+            <div id="statsLoading" class="text-center" style="display: none;">
+                Загрузка статистики<span class="loading"></span>
+            </div>
+
+            <div id="statsContent" style="display: none;">
+                <div class="stats-grid" id="statsGrid"></div>
+                
+                <div style="margin-top: 20px;">
+                    <h3 style="font-size: 16px; margin-bottom: 15px;">📍 Топ страны</h3>
+                    <div id="topCountries"></div>
+                </div>
+
+                <div style="margin-top: 20px;">
+                    <h3 style="font-size: 16px; margin-bottom: 15px;">📅 Клики по дням</h3>
+                    <div id="clicksPerDay"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:8000/api/v1';
+        let currentUser = null;
+        let authMode = 'login'; // 'login' или 'register'
+        let currentPage = 1;
+        let currentLinkId = null;
+
+        // ============ Auth ============
+        function toggleAuthMode() {
+            authMode = authMode === 'login' ? 'register' : 'login';
+            const title = document.getElementById('authTitle');
+            const submit = document.getElementById('authSubmitText');
+            const toggle = document.getElementById('toggleText');
+
+            if (authMode === 'register') {
+                title.textContent = 'Регистрация';
+                submit.textContent = 'Зарегистрироваться';
+                toggle.textContent = 'Уже есть аккаунт?';
+            } else {
+                title.textContent = 'Вход';
+                submit.textContent = 'Войти';
+                toggle.textContent = 'Нет аккаунта?';
+            }
+
+            document.getElementById('authAlert').classList.remove('show');
+        }
+
+        async function handleAuth(e) {
+            e.preventDefault();
+            const nickname = document.getElementById('nickname').value;
+            const password = document.getElementById('password').value;
+            const endpoint = authMode === 'login' ? '/auth/login' : '/auth/register';
+
+            try {
+                const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ nickname, password })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    showAlert('authAlert', data.detail || 'Ошибка аутентификации', 'danger');
+                    return;
+                }
+
+                localStorage.setItem('token', data.access_token);
+                await getCurrentUser();
+                switchPage('appPage');
+            } catch (error) {
+                showAlert('authAlert', 'Ошибка подключения к серверу', 'danger');
+            }
+        }
+
+        async function getCurrentUser() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/auth/me`, {
+                    headers: { 'Authorization': `Bearer ${getToken()}` }
+                });
+
+                if (!response.ok) throw new Error('Unauthorized');
+
+                currentUser = await response.json();
+                document.getElementById('currentUserNickname').textContent = currentUser.nickname;
+            } catch (error) {
+                logout();
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('token');
+            currentUser = null;
+            authMode = 'login';
+            switchPage('authPage');
+            document.getElementById('authForm').reset();
+        }
+
+        function getToken() {
+            return localStorage.getItem('token');
+        }
+
+        // ============ Links ============
+        async function handleCreateLink(e) {
+            e.preventDefault();
+            const originalUrl = document.getElementById('originalUrl').value;
+            const shortCode = document.getElementById('shortCode').value || null;
+            const expiresAt = document.getElementById('expiresAt').value || null;
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/links`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${getToken()}`
+                    },
+                    body: JSON.stringify({
+                        original_url: originalUrl,
+                        short_code: shortCode,
+                        expires_at: expiresAt
+                    })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    showAlert('createAlert', data.detail || 'Ошибка создания ссылки', 'danger');
+                    return;
+                }
+
+                showAlert('createAlert', 'Ссылка успешно создана!', 'success');
+                document.getElementById('shortUrl').textContent = data.short_url;
+                document.getElementById('createdLink').style.display = 'block';
+                document.getElementById('createLinkForm').reset();
+
+                // Refresh links list
+                loadLinks();
+            } catch (error) {
+                showAlert('createAlert', 'Ошибка подключения', 'danger');
+            }
+        }
+
+        async function loadLinks(page = 1) {
+            currentPage = page;
+            const loading = document.getElementById('linksLoading');
+            loading.style.display = 'block';
+
+            try {
+                const response = await fetch(
+                    `${API_BASE_URL}/links?page=${page}&limit=10`,
+                    { headers: { 'Authorization': `Bearer ${getToken()}` } }
+                );
+
+                if (!response.ok) throw new Error('Failed to load links');
+
+                const data = await response.json();
+                renderLinks(data.items, data.total);
+            } catch (error) {
+                showAlert('linksAlert', 'Ошибка загрузки ссылок', 'danger');
+            } finally {
+                loading.style.display = 'none';
+            }
+        }
+
+        function renderLinks(links, total) {
+            const container = document.getElementById('linksContainer');
+
+            if (links.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📭</div>
+                        <p>У вас нет ссылок. Создайте первую!</p>
+                    </div>
+                `;
+                document.getElementById('linksPagination').style.display = 'none';
+                return;
+            }
+
+            const tableHtml = `
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Короткий код</th>
+                                <th>Исходный URL</th>
+                                <th>Клики</th>
+                                <th>Создано</th>
+                                <th>Действия</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${links.map(link => `
+                                <tr>
+                                    <td><span class="short-code">${link.short_code}</span></td>
+                                    <td style="max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                                        <a href="${link.original_url}" target="_blank" title="${link.original_url}" style="color: var(--primary); text-decoration: none;">
+                                            ${link.original_url}
+                                        </a>
+                                    </td>
+                                    <td>${link.clicks || 0}</td>
+                                    <td>${new Date(link.created_at).toLocaleDateString('ru-RU')}</td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="btn btn-primary btn-small" onclick="showStats('${link.id}', '${link.short_code}')">
+                                                Статистика
+                                            </button>
+                                            <button class="btn btn-danger btn-small" onclick="deleteLink('${link.id}')">
+                                                Удалить
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+
+            container.innerHTML = tableHtml;
+
+            // Pagination
+            const totalPages = Math.ceil(total / 10);
+            if (totalPages > 1) {
+                renderPagination(totalPages);
+            } else {
+                document.getElementById('linksPagination').style.display = 'none';
+            }
+        }
+
+        function renderPagination(totalPages) {
+            const pagination = document.getElementById('linksPagination');
+            pagination.innerHTML = '';
+            pagination.style.display = 'flex';
+
+            for (let i = 1; i <= totalPages; i++) {
+                const btn = document.createElement('button');
+                btn.textContent = i;
+                btn.className = currentPage === i ? 'active' : '';
+                btn.onclick = () => loadLinks(i);
+                pagination.appendChild(btn);
+            }
+        }
+
+        async function deleteLink(linkId) {
+            if (!confirm('Вы уверены, что хотите удалить эту ссылку?')) return;
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/links/${linkId}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${getToken()}` }
+                });
+
+                if (!response.ok) throw new Error('Failed to delete');
+
+                showAlert('linksAlert', 'Ссылка удалена', 'success');
+                loadLinks();
+            } catch (error) {
+                showAlert('linksAlert', 'Ошибка удаления ссылки', 'danger');
+            }
+        }
+
+        // ============ Stats ============
+        async function showStats(linkId, shortCode) {
+            currentLinkId = linkId;
+            document.getElementById('statsModal').classList.add('show');
+            document.getElementById('statsLoading').style.display = 'block';
+            document.getElementById('statsContent').style.display = 'none';
+
+            try {
+                const response = await fetch(
+                    `${API_BASE_URL}/links/${linkId}/stats`,
+                    { headers: { 'Authorization': `Bearer ${getToken()}` } }
+                );
+
+                if (!response.ok) throw new Error('Failed to load stats');
+
+                const stats = await response.json();
+                renderStats(stats, shortCode);
+            } catch (error) {
+                showAlert('statsAlert', 'Ошибка загрузки статистики', 'danger');
+            } finally {
+                document.getElementById('statsLoading').style.display = 'none';
+            }
+        }
+
+        function renderStats(stats, shortCode) {
+            const statsGrid = document.getElementById('statsGrid');
+            statsGrid.innerHTML = `
+                <div class="stat-box">
+                    <div class="stat-value">${stats.total_clicks || 0}</div>
+                    <div class="stat-label">Всего кликов</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value">${stats.unique_ips || 0}</div>
+                    <div class="stat-label">Уникальных IP</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value">${shortCode}</div>
+                    <div class="stat-label">Код ссылки</div>
+                </div>
+            `;
+
+            // Top countries
+            const topCountries = document.getElementById('topCountries');
+            if (stats.top_countries && stats.top_countries.length > 0) {
+                topCountries.innerHTML = stats.top_countries
+                    .map(c => `<div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border);">
+                        <span>${c.country || 'Неизвестно'}</span>
+                        <strong>${c.count}</strong>
+                    </div>`)
+                    .join('');
+            } else {
+                topCountries.innerHTML = '<p style="color: var(--text-gray); font-size: 14px;">Нет данных</p>';
+            }
+
+            // Clicks per day
+            const clicksPerDay = document.getElementById('clicksPerDay');
+            if (stats.clicks_per_day && stats.clicks_per_day.length > 0) {
+                clicksPerDay.innerHTML = stats.clicks_per_day
+                    .map(d => `<div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border);">
+                        <span>${new Date(d.date).toLocaleDateString('ru-RU')}</span>
+                        <strong>${d.count}</strong>
+                    </div>`)
+                    .join('');
+            } else {
+                clicksPerDay.innerHTML = '<p style="color: var(--text-gray); font-size: 14px;">Нет данных</p>';
+            }
+
+            document.getElementById('statsContent').style.display = 'block';
+        }
+
+        function closeStatsModal() {
+            document.getElementById('statsModal').classList.remove('show');
+        }
+
+        // ============ Utilities ============
+        function switchPage(pageId) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+
+            if (pageId === 'appPage') {
+                loadLinks();
+            }
+        }
+
+        function showAlert(elementId, message, type) {
+            const alert = document.getElementById(elementId);
+            alert.className = `alert show alert-${type}`;
+            alert.textContent = message;
+
+            setTimeout(() => {
+                alert.classList.remove('show');
+            }, 5000);
+        }
+
+        function copyToClipboard() {
+            const text = document.getElementById('shortUrl').textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                showAlert('createAlert', 'Ссылка скопирована в буфер обмена!', 'success');
+            });
+        }
+
+        // ============ Event Listeners ============
+        document.getElementById('authForm').addEventListener('submit', handleAuth);
+        document.getElementById('createLinkForm').addEventListener('submit', handleCreateLink);
+
+        // ============ Init ============
+        (async () => {
+            const token = getToken();
+            if (token) {
+                try {
+                    await getCurrentUser();
+                    switchPage('appPage');
+                } catch {
+                    logout();
+                }
+            }
+        })();
+
+        // Close modal on outside click
+        document.getElementById('statsModal').addEventListener('click', (e) => {
+            if (e.target.id === 'statsModal') closeStatsModal();
+        });
+    </script>
+</body>
+</html>
