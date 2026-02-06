@@ -21,27 +21,17 @@ class User(Base):
     """Модель пользователя для БД."""
 
     id: Mapped[uuid.UUID] = mapped_column(
-        UUID(as_uuid=True),
-        primary_key=True,
-        default=uuid.uuid4,
-        index=True
+        UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, index=True
     )
 
     nickname: Mapped[Optional[str]] = mapped_column(
-        String(300),
-        nullable=False,
-        unique=True
+        String(300), nullable=False, unique=True
     )
 
-    hashed_password: Mapped[Optional[str]] = mapped_column(
-        String(300),
-        nullable=False
-    )
+    hashed_password: Mapped[Optional[str]] = mapped_column(String(300), nullable=False)
 
     role: Mapped[Optional[str]] = mapped_column(
-        String(50),
-        nullable=True,
-        default=UserRoleEnum.USER.value
+        String(50), nullable=True, default=UserRoleEnum.USER.value
     )
 
     @property

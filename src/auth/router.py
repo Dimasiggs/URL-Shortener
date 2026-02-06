@@ -1,4 +1,5 @@
 """Обработчик аутентификации пользователей."""
+
 from fastapi import APIRouter, Depends, HTTPException, status
 
 from src.auth.dependencies import get_current_user
@@ -16,13 +17,16 @@ router = APIRouter(
 )
 
 
-@router.post("/register", response_model=UserRegisterResponse, status_code=status.HTTP_201_CREATED)
+@router.post(
+    "/register",
+    response_model=UserRegisterResponse,
+    status_code=status.HTTP_201_CREATED,
+)
 async def register(
-    user: UserRegisterRequest,
-    auth_service: AuthServicePort = Depends(get_auth_service)
+    user: UserRegisterRequest, auth_service: AuthServicePort = Depends(get_auth_service)
 ):
     print(UserRegisterRequest)
-    try: 
+    try:
         result = await auth_service.register(user)
         print(result)
 
@@ -37,11 +41,9 @@ async def register(
 
 
 @router.get("/me", response_model=UserMeResponse, status_code=status.HTTP_200_OK)
-async def me(
-    current_user: dict = Depends(get_current_user)
-):
+async def me(current_user: dict = Depends(get_current_user)):
     """Получить профиль текущего пользователя (заглушка)."""
     return UserMeResponse(
         id=current_user["id"],
-        nickname=current_user["nickname"]  # из БД или сессии
+        nickname=current_user["nickname"],  # из БД или сессии
     )

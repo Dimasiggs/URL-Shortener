@@ -16,10 +16,10 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"], # settings.ALLOWED_ORIGINS
-    allow_credentials=True, # settings.ALLOW_CREDENTIALS
+    allow_origins=["*"],  # settings.ALLOWED_ORIGINS
+    allow_credentials=True,  # settings.ALLOW_CREDENTIALS
     allow_methods=["*"],
-    allow_headers=["*"]
+    allow_headers=["*"],
 )
 
 
@@ -35,13 +35,12 @@ app.include_router(links_router, prefix="/api/v1")
 
 @app.get("/r/{short_code}")
 async def redirect_to_original(
-    short_code: str,
-    link_service: LinkServicePort = Depends(get_link_service)
-    ):
+    short_code: str, link_service: LinkServicePort = Depends(get_link_service)
+):
     # Получаем оригинальную ссылку из репозитория
     link = await link_service.redirect(short_code)
     original_url = link.original_url
-    
+
     return RedirectResponse(url=original_url, status_code=302)
 
 
@@ -49,5 +48,6 @@ app.mount("/", StaticFiles(directory="static"), name="static")
 
 if __name__ == "__main__":
     import uvicorn
+
     server_port = int(os.getenv("PORT", 8000))
     uvicorn.run("app:app", host="0.0.0.0", port=server_port, reload=True)

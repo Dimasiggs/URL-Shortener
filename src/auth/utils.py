@@ -17,7 +17,7 @@ class Hasher(HasherPort):
     def __init__(self, pepper: str, salt_len: int = 5):
         self.salt_len = salt_len
         self.pepper = pepper
-    
+
     def encode(self, text: str, salt: str) -> str:
         data = text + salt + self.pepper
         data = data.encode()
@@ -33,7 +33,6 @@ class Hasher(HasherPort):
         return urandom(self.salt_len).hex()
 
 
-
 class JWTService(JWTServicePort):
     def __init__(self, alg: str, secret_key: str, exp_minutes: str):
         self.alg = alg
@@ -43,7 +42,7 @@ class JWTService(JWTServicePort):
     def encode(self, user: UserSchemaBase) -> JWTToken:
         expire = datetime.now(timezone.utc) + timedelta(minutes=15)
         to_encode = {"id": str(user.id), "exp": expire}
-        
+
         encoded_jwt = jwt.encode(to_encode, self.secret_key, algorithm=self.alg)
         return JWTToken(access_token=encoded_jwt)
 

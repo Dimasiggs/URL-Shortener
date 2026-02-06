@@ -1,7 +1,12 @@
 from fastapi import APIRouter, Depends, Query, status
 import uuid
 
-from src.links.schemas import LinksListResponse, LinkSchemaFull, LinkSchemaAddResponse, LinkSchemaAdd
+from src.links.schemas import (
+    LinksListResponse,
+    LinkSchemaFull,
+    LinkSchemaAddResponse,
+    LinkSchemaAdd,
+)
 from src.links.dependencies import get_link_service, get_current_user
 from src.links.interfaces import LinkServicePort
 from src.links.exceptions import DuplicateCodeError
@@ -15,18 +20,20 @@ async def get_links(
     current_user: dict = Depends(get_current_user),
     page: int = Query(1, ge=1),
     limit: int = Query(1, le=100),
-    link_service: LinkServicePort = Depends(get_link_service)
+    link_service: LinkServicePort = Depends(get_link_service),
 ):
-    links = await link_service.get_by_user_id(current_user["id"], limit, page-1)
+    links = await link_service.get_by_user_id(current_user["id"], limit, page - 1)
 
     return links
 
 
-@router.post("/links", response_model=LinkSchemaFull, status_code=status.HTTP_201_CREATED)
+@router.post(
+    "/links", response_model=LinkSchemaFull, status_code=status.HTTP_201_CREATED
+)
 async def create_link(
     link: LinkSchemaAddResponse,
     current_user: dict = Depends(get_current_user),
-    link_service: LinkServicePort = Depends(get_link_service)
+    link_service: LinkServicePort = Depends(get_link_service),
 ):
     # print(link) # original_url='http://localhost:8000/index.html' short_code='slug' expires_at=datetime.datetime(2222, 2, 22, 22, 22)
 
@@ -38,10 +45,9 @@ async def create_link(
         original_url=link.original_url,
         short_code=short_code,
         owner_id=current_user["id"],
-        expires_at=link.expires_at
-        )
+        expires_at=link.expires_at,
+    )
     try:
-    
         added_link = await link_service.create(link_schema_add)
         return added_link
     except DuplicateCodeError:
@@ -52,7 +58,7 @@ async def create_link(
 async def delete_link(
     link_id: uuid.UUID,
     current_user: dict = Depends(get_current_user),
-    link_service: LinkServicePort = Depends(get_link_service)
-    ):
+    link_service: LinkServicePort = Depends(get_link_service),
+):
     print(link_id)
     await link_service.delete_by_id(link_id)

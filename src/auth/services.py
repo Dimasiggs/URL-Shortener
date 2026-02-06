@@ -3,7 +3,6 @@ from src.users.schemas import UserRegisterRequest, UserSchemaAdd
 from src.users.models import User
 
 
-
 class AuthService(AuthServicePort):
     def __init__(self, hasher: HasherPort, auth_repository: AuthRepositoryPort):
         self.hasher = hasher
@@ -14,8 +13,10 @@ class AuthService(AuthServicePort):
         salt = self.hasher.salt
         hashed_password = self.hasher.encode(user.password, salt)
 
-        add_user = UserSchemaAdd(nickname=user.nickname, hashed_password=hashed_password)
-        
+        add_user = UserSchemaAdd(
+            nickname=user.nickname, hashed_password=hashed_password
+        )
+
         user_model: User = await self.auth_repository.register(add_user)
 
         return user_model

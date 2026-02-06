@@ -5,7 +5,9 @@ from src.links.interfaces import LinkRepositoryPort, LinkServicePort, CodeGenera
 
 
 class LinkService(LinkServicePort):
-    def __init__(self, code_generator: CodeGeneratorPort, repository: LinkRepositoryPort):
+    def __init__(
+        self, code_generator: CodeGeneratorPort, repository: LinkRepositoryPort
+    ):
         self.code_generator = code_generator
         self.repository = repository
 
@@ -23,20 +25,28 @@ class LinkService(LinkServicePort):
                 return new_link
             except Exception:
                 continue
-    
-    async def get_by_user_id(self, user_id: UUID, limit: int = None, page: int = 0) -> LinksListResponse:
+
+    async def get_by_user_id(
+        self, user_id: UUID, limit: int = None, page: int = 0
+    ) -> LinksListResponse:
         offset = limit * page
         links = await self.repository.get_by_user_id(user_id, offset, limit)
 
         return links
-    
+
     async def get_by_short_code(self, short_code: str) -> LinkResponse:
         try:
             link = await self.repository.get_by_short_code(short_code)
-            
+
             return link
         except Exception:
-            return LinkResponse(id="", short_code="", original_url="http://localhost:8000/index.html", clicks=0, created_at="")
+            return LinkResponse(
+                id="",
+                short_code="",
+                original_url="http://localhost:8000/index.html",
+                clicks=0,
+                created_at="",
+            )
 
     async def redirect(self, short_code: str) -> LinkResponse:
         try:
@@ -44,7 +54,13 @@ class LinkService(LinkServicePort):
             await self.repository.add_click(short_code)
             return link
         except Exception:
-            return LinkResponse(id="", short_code="", original_url="http://localhost:8000/index.html", clicks=0, created_at="")
+            return LinkResponse(
+                id="",
+                short_code="",
+                original_url="http://localhost:8000/index.html",
+                clicks=0,
+                created_at="",
+            )
 
     async def delete_by_id(self, link_id: UUID) -> None:
         await self.repository.delete_by_id(link_id)

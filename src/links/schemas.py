@@ -63,6 +63,7 @@ class LinkResponse(BaseModel):
     clicks: int
     created_at: str  # ISO формат
 
+
 class LinksListResponse(BaseModel):
     items: List[LinkSchemaFull]
     total: int

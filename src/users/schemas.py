@@ -21,7 +21,7 @@ class UserSchemaAdd(BaseModel):
 
 class UserRegisterRequest(BaseModel):
     """Схема для запроса на добавление пользователей."""
-    
+
     nickname: str
     password: str
 

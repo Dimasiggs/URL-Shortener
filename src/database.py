@@ -40,6 +40,7 @@ async def get_async_connection() -> AsyncIterator[AsyncSession]:
         finally:
             await session.close()
 
+
 # Для FastAPI Depends (без context manager):
 async def get_session() -> AsyncIterator[AsyncSession]:
     """Возвращает асинхронную сессиию."""

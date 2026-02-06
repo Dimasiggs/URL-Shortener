@@ -23,20 +23,26 @@ async def get_hasher() -> HasherPort:
     return Hasher(pepper)
 
 
-async def get_auth_repository(db: AsyncSession = Depends(get_session)) -> AuthRepositoryPort:
+async def get_auth_repository(
+    db: AsyncSession = Depends(get_session),
+) -> AuthRepositoryPort:
     return AuthRepository(db)
 
 
 async def get_auth_service(
     hasher: HasherPort = Depends(get_hasher),
-    auth_repository: AuthRepositoryPort = Depends(get_auth_repository)
+    auth_repository: AuthRepositoryPort = Depends(get_auth_repository),
 ) -> AuthServicePort:
     return AuthService(hasher, auth_repository)
 
 
 security = HTTPBearer()
-async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security)) -> dict:
-    """Заглушка: возвращает фейкового пользователя по токену."""  
+
+
+async def get_current_user(
+    credentials: HTTPAuthorizationCredentials = Depends(security),
+) -> dict:
+    """Заглушка: возвращает фейкового пользователя по токену."""
     """Получение текущего пользователя"""
     try:
         # payload = jwt.decode(..., algorithms=["HS256"])
@@ -45,5 +51,7 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(s
         raise HTTPException(status_code=401, detail="Could not validate credentials")
 
 
-async def get_auth_repository(db: AsyncSession = Depends(get_session)) -> AuthRepositoryPort:
+async def get_auth_repository(
+    db: AsyncSession = Depends(get_session),
+) -> AuthRepositoryPort:
     return AuthRepository(db)
