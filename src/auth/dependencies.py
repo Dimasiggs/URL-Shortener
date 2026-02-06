@@ -14,7 +14,7 @@ from src.auth.repositories.auth import AuthRepository
 from src.database import get_session
 
 
-from src.auth.services import Hasher
+from src.auth.utils import Hasher
 from src.config import settings
 
 

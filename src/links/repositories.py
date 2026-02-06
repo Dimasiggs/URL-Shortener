@@ -2,7 +2,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy import select, update, delete
 from uuid import UUID
-from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.links.models import Link
 from src.links.schemas import LinkSchemaAdd, LinkSchemaFull, LinkResponse, LinksListResponse

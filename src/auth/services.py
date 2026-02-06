@@ -1,32 +1,6 @@
-from hashlib import sha256
-from os import urandom
-
-from src.utils import singleton
 from src.auth.interfaces import HasherPort, AuthRepositoryPort, AuthServicePort
 from src.users.schemas import UserRegisterRequest, UserSchemaAdd
 from src.users.models import User
-
-
-
-@singleton
-class Hasher(HasherPort):
-    def __init__(self, pepper: str, salt_len: int = 5):
-        self.salt_len = salt_len
-        self.pepper = pepper
-    
-    def encode(self, text: str, salt: str) -> str:
-        data = text + salt + self.pepper
-        data = data.encode()
-        hashed_data = sha256(data).hexdigest()
-
-        return hashed_data
-
-    def verify(self, text: str, salt: str, hashed_text: str) -> bool:
-        return self.encode(text, salt) == hashed_text
-
-    @property
-    def salt(self) -> str:
-        return urandom(self.salt_len).hex()
 
 
 

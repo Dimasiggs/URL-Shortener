@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Query, Response, status
+from fastapi import APIRouter, Depends, Query, status
 import uuid
 
 from src.links.schemas import LinksListResponse, LinkSchemaFull, LinkSchemaAddResponse, LinkSchemaAdd
@@ -31,7 +31,8 @@ async def create_link(
     # print(link) # original_url='http://localhost:8000/index.html' short_code='slug' expires_at=datetime.datetime(2222, 2, 22, 22, 22)
 
     short_code = link.short_code
-    if short_code is None: short_code = link_service.code_generator.generate()
+    if short_code is None:
+        short_code = link_service.code_generator.generate()
 
     link_schema_add = LinkSchemaAdd(
         original_url=link.original_url,

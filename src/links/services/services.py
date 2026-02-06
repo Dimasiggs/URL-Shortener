@@ -1,6 +1,5 @@
 from uuid import UUID
 
-from src.links.models import Link
 from src.links.schemas import LinkSchemaAdd, LinkResponse, LinksListResponse
 from src.links.interfaces import LinkRepositoryPort, LinkServicePort, CodeGeneratorPort
 
@@ -36,7 +35,7 @@ class LinkService(LinkServicePort):
             link = await self.repository.get_by_short_code(short_code)
             
             return link
-        except:
+        except Exception:
             return LinkResponse(id="", short_code="", original_url="http://localhost:8000/index.html", clicks=0, created_at="")
 
     async def redirect(self, short_code: str) -> LinkResponse:
@@ -44,7 +43,7 @@ class LinkService(LinkServicePort):
             link = await self.repository.get_by_short_code(short_code)
             await self.repository.add_click(short_code)
             return link
-        except:
+        except Exception:
             return LinkResponse(id="", short_code="", original_url="http://localhost:8000/index.html", clicks=0, created_at="")
 
     async def delete_by_id(self, link_id: UUID) -> None:

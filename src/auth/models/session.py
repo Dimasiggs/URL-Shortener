@@ -1,9 +1,7 @@
 """Модель сессий пользователей для БД."""
 
-from sqlalchemy import UUID, String
-from enum import StrEnum
+from sqlalchemy import UUID
 from datetime import datetime
-from typing import Optional
 from sqlalchemy.orm import Mapped, mapped_column
 import uuid
 
