@@ -1,6 +1,6 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import IntegrityError
-from sqlalchemy import select
+from sqlalchemy import select, update, delete
 from uuid import UUID
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -20,7 +20,8 @@ class LinkRepository(LinkRepositoryPort):
             original_url=link.original_url,
             short_code=link.short_code,
             owner_id=link.owner_id,
-            expires_at=link.expires_at
+            expires_at=link.expires_at,
+            clicks=0
         )
         self.session.add(db_link)
         try:
@@ -52,3 +53,31 @@ class LinkRepository(LinkRepositoryPort):
         result = await self.session.execute(query)
         link = result.scalars().one()
         return link.to_read_model()
+    
+    async def add_click(self, short_code: str) -> LinkResponse:
+        query = (
+            update(Link)
+            .where(Link.short_code == short_code)
+            .values(clicks=Link.clicks + 1)  # ← Ключевая часть: используем выражение из модели
+            .returning(Link)
+        )
+
+        result = await self.session.execute(query)
+        updated_link = result.scalar_one_or_none()
+
+        if updated_link is None:
+            raise ValueError(f"Link with code '{short_code}' not found")
+        
+        await self.session.commit()
+        return updated_link.to_read_model()
+
+    async def delete_by_id(self, link_id: UUID) -> None:
+        print(link_id)
+        print(str(link_id))
+        query = (
+            delete(Link)
+            .where(Link.id == link_id)
+        )
+
+        await self.session.execute(query)
+        await self.session.commit()

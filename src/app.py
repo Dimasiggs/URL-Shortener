@@ -39,8 +39,9 @@ async def redirect_to_original(
     link_service: LinkServicePort = Depends(get_link_service)
     ):
     # Получаем оригинальную ссылку из репозитория
-    link = await link_service.get_by_short_code(short_code)
+    link = await link_service.redirect(short_code)
     original_url = link.original_url
+    
     return RedirectResponse(url=original_url, status_code=302)
 
 

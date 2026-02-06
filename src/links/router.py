@@ -1,4 +1,5 @@
-from fastapi import APIRouter, Depends, Query, status
+from fastapi import APIRouter, Depends, Query, Response, status
+import uuid
 
 from src.links.schemas import LinksListResponse, LinkSchemaFull, LinkSchemaAddResponse, LinkSchemaAdd
 from src.links.dependencies import get_link_service, get_current_user
@@ -9,7 +10,7 @@ from src.links.exceptions import DuplicateCodeError
 router = APIRouter(tags=["Links"])
 
 
-@router.get("/links", response_model=LinksListResponse, status_code=status.HTTP_201_CREATED)
+@router.get("/links", response_model=LinksListResponse, status_code=status.HTTP_200_OK)
 async def get_links(
     current_user: dict = Depends(get_current_user),
     page: int = Query(1, ge=1),
@@ -19,10 +20,6 @@ async def get_links(
     links = await link_service.get_by_user_id(current_user["id"], limit, page-1)
 
     return links
-
-from pydantic import BaseModel
-class ResponseSchema(BaseModel):
-    short_url: str = "www.short-url.com"
 
 
 @router.post("/links", response_model=LinkSchemaFull, status_code=status.HTTP_201_CREATED)
@@ -48,3 +45,13 @@ async def create_link(
         return added_link
     except DuplicateCodeError:
         raise ValueError("Short code already in use")
+
+
+@router.delete("/links/{link_id}", status_code=status.HTTP_202_ACCEPTED)
+async def delete_link(
+    link_id: uuid.UUID,
+    current_user: dict = Depends(get_current_user),
+    link_service: LinkServicePort = Depends(get_link_service)
+    ):
+    print(link_id)
+    await link_service.delete_by_id(link_id)

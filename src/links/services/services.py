@@ -5,7 +5,6 @@ from src.links.schemas import LinkSchemaAdd, LinkResponse, LinksListResponse
 from src.links.interfaces import LinkRepositoryPort, LinkServicePort, CodeGeneratorPort
 
 
-
 class LinkService(LinkServicePort):
     def __init__(self, code_generator: CodeGeneratorPort, repository: LinkRepositoryPort):
         self.code_generator = code_generator
@@ -13,13 +12,13 @@ class LinkService(LinkServicePort):
 
     async def create(self, link_schema: LinkSchemaAdd) -> LinkResponse:
         while 1:
-            link_add = Link(
+            link_add = LinkSchemaAdd(
                 original_url=link_schema.original_url,
                 short_code=self.code_generator.generate(),
                 owner_id=link_schema.owner_id,
-                expires_at=link_schema.expires_at
+                expires_at=link_schema.expires_at,
             )
-        
+
             try:
                 new_link = await self.repository.create(link_add)
                 return new_link
@@ -33,9 +32,20 @@ class LinkService(LinkServicePort):
         return links
     
     async def get_by_short_code(self, short_code: str) -> LinkResponse:
-        try:    
+        try:
             link = await self.repository.get_by_short_code(short_code)
             
             return link
         except:
             return LinkResponse(id="", short_code="", original_url="http://localhost:8000/index.html", clicks=0, created_at="")
+
+    async def redirect(self, short_code: str) -> LinkResponse:
+        try:
+            link = await self.repository.get_by_short_code(short_code)
+            await self.repository.add_click(short_code)
+            return link
+        except:
+            return LinkResponse(id="", short_code="", original_url="http://localhost:8000/index.html", clicks=0, created_at="")
+
+    async def delete_by_id(self, link_id: UUID) -> None:
+        await self.repository.delete_by_id(link_id)
