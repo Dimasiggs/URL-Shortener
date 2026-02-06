@@ -53,6 +53,7 @@ class LinkSchemaFull(LinkSchemaBase):
     created_at: datetime
     expires_at: Optional[datetime] = None
     is_active: bool
+    clicks: int
 
 
 class LinkResponse(BaseModel):

@@ -1,6 +1,6 @@
 """Модель ссылки для БД."""
 import uuid
-from sqlalchemy import UUID, Boolean, DateTime, String, func
+from sqlalchemy import UUID, Boolean, DateTime, String, func, Integer
 from datetime import datetime
 from typing import Optional
 from sqlalchemy.orm import Mapped, mapped_column
@@ -30,6 +30,12 @@ class Link(Base):
         nullable=False,
         unique=True,
         index=True
+    )
+
+    clicks: Mapped[int] = mapped_column(
+        Integer,
+        default=0,
+        nullable=False
     )
 
     owner_id: Mapped[uuid.UUID] = mapped_column(
@@ -64,5 +70,6 @@ class Link(Base):
             owner_id=self.owner_id,
             created_at=self.created_at,
             expires_at=self.expires_at,
-            is_active=self.is_active
+            is_active=self.is_active,
+            clicks=self.clicks
         )
