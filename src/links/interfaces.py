@@ -8,7 +8,6 @@ from src.links.schemas import (
     LinkSchemaFull,
     LinkSchemaBase,
 )
-from src.users.schemas import UserSchemaBase
 
 
 class LinkRepositoryPort(Protocol):

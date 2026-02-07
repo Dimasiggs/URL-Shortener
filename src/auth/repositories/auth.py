@@ -6,7 +6,7 @@ from uuid import UUID
 from src.auth.exceptions import UserAlreadyExistsError
 from src.auth.interfaces import AuthRepositoryPort
 from src.users.models import User
-from src.users.schemas import UserSchemaAdd, UserAuthenticationResponse, UserSchemaBase
+from src.users.schemas import UserSchemaAdd
 
 
 

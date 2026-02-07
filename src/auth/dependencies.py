@@ -36,12 +36,6 @@ async def get_auth_repository(
     return AuthRepository(db)
 
 
-async def get_auth_repository(
-    db: AsyncSession = Depends(get_session),
-) -> AuthRepositoryPort:
-    return AuthRepository(db)
-
-
 def get_jwt_service() -> JWTServicePort:
     secret_key = settings.SECRET_KEY
     alg = settings.JWT_ALGORITHM
