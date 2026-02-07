@@ -684,7 +684,7 @@
                     return;
                 }
 
-                localStorage.setItem('token', data.access_token);
+                localStorage.setItem('token', data.token);
                 await getCurrentUser();
                 switchPage('appPage');
             } catch (error) {
@@ -697,7 +697,6 @@
                 const response = await fetch(`${API_BASE_URL}/auth/me`, {
                     headers: { 'Authorization': `Bearer ${getToken()}` }
                 });
-
                 if (!response.ok) throw new Error('Unauthorized');
 
                 currentUser = await response.json();
