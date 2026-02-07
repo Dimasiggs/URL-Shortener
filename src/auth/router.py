@@ -4,9 +4,10 @@ from fastapi import APIRouter, Depends, HTTPException, status
 
 from src.auth.dependencies import get_current_user
 
-from src.auth.services import AuthServicePort
+from src.auth.interfaces import AuthServicePort
+
 from src.auth.dependencies import get_auth_service
-from src.users.schemas import UserRegisterRequest, UserRegisterResponse, UserMeResponse
+from src.users.schemas import UserAuthenticationRequest, UserAuthenticationResponse, UserMeResponse, UserSchemaBase
 
 from src.auth.exceptions import UserAlreadyExistsError
 
@@ -17,20 +18,29 @@ router = APIRouter(
 )
 
 
+@router.post("/login", response_model=UserAuthenticationResponse)
+async def login(
+    user: UserAuthenticationRequest, auth_service: AuthServicePort = Depends(get_auth_service)
+) -> UserAuthenticationResponse:
+    user_response = await auth_service.login(user)
+
+    return user_response
+
+
 @router.post(
     "/register",
-    response_model=UserRegisterResponse,
+    response_model=UserAuthenticationResponse,
     status_code=status.HTTP_201_CREATED,
 )
 async def register(
-    user: UserRegisterRequest, auth_service: AuthServicePort = Depends(get_auth_service)
+    user: UserAuthenticationRequest, auth_service: AuthServicePort = Depends(get_auth_service)
 ):
-    print(UserRegisterRequest)
+    print(UserAuthenticationRequest)
     try:
         result = await auth_service.register(user)
         print(result)
 
-        r = UserRegisterResponse(token="token", refresh_token="refresh_token")
+        r = UserAuthenticationResponse(token="token", refresh_token="refresh_token")
         return r
 
     except UserAlreadyExistsError:
@@ -43,7 +53,8 @@ async def register(
 @router.get("/me", response_model=UserMeResponse, status_code=status.HTTP_200_OK)
 async def me(current_user: dict = Depends(get_current_user)):
     """Получить профиль текущего пользователя (заглушка)."""
+
     return UserMeResponse(
         id=current_user["id"],
-        nickname=current_user["nickname"],  # из БД или сессии
+        nickname="test",  # из БД или сессии
     )

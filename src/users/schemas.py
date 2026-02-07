@@ -19,14 +19,14 @@ class UserSchemaAdd(BaseModel):
     hashed_password: str
 
 
-class UserRegisterRequest(BaseModel):
+class UserAuthenticationRequest(BaseModel):
     """Схема для запроса на добавление пользователей."""
 
     nickname: str
     password: str
 
 
-class UserRegisterResponse(BaseModel):
+class UserAuthenticationResponse(BaseModel):
     """Схема для ответа на запрос на добавление пользователей."""
 
     token: str
@@ -34,5 +34,5 @@ class UserRegisterResponse(BaseModel):
 
 
 class UserMeResponse(BaseModel):
-    id: int
+    id: UUID
     nickname: str

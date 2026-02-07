@@ -7,7 +7,8 @@ from src.links.schemas import (
     LinkSchemaAddResponse,
     LinkSchemaAdd,
 )
-from src.links.dependencies import get_link_service, get_current_user
+from src.links.dependencies import get_link_service
+from src.auth.dependencies import get_current_user
 from src.links.interfaces import LinkServicePort
 from src.links.exceptions import DuplicateCodeError
 
@@ -22,6 +23,8 @@ async def get_links(
     limit: int = Query(1, le=100),
     link_service: LinkServicePort = Depends(get_link_service),
 ):
+    print("/links")
+    print(current_user["id"])
     links = await link_service.get_by_user_id(current_user["id"], limit, page - 1)
 
     return links

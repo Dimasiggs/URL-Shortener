@@ -1,6 +1,14 @@
 import os
 import sys
+from logging.config import fileConfig
 
+from sqlalchemy import engine_from_config
+from sqlalchemy import pool
+
+from alembic import context
+
+
+from src.database import Base
 
 # Путь к корню проекта: .../URL-Shortener
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
@@ -8,28 +16,13 @@ if BASE_DIR not in sys.path:
     sys.path.insert(0, BASE_DIR)
 
 
-from logging.config import fileConfig
-
-from sqlalchemy import engine_from_config
-from sqlalchemy import pool
-
-import os
-from alembic import context
-
-from src.users.models import User
-from src.links.models import Link
-from src.auth.models.session import Session
-
-from src.database import Base
-
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
 
 
 config.set_main_option(
-    "sqlalchemy.url",
-    os.getenv("DATABASE_URL").replace("+asyncpg", "+psycopg2")
+    "sqlalchemy.url", os.getenv("DATABASE_URL").replace("+asyncpg", "+psycopg2")
 )
 
 # Interpret the config file for Python logging.
@@ -87,9 +80,7 @@ def run_migrations_online() -> None:
     )
 
     with connectable.connect() as connection:
-        context.configure(
-            connection=connection, target_metadata=target_metadata
-        )
+        context.configure(connection=connection, target_metadata=target_metadata)
 
         with context.begin_transaction():
             context.run_migrations()

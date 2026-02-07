@@ -49,3 +49,7 @@ async def get_session() -> AsyncIterator[AsyncSession]:
             yield session
         finally:
             await session.close()
+
+
+def get_session_sync():
+    return async_session_maker()

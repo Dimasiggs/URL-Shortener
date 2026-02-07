@@ -35,19 +35,3 @@ async def get_link_service(
     repository: LinkRepositoryPort = Depends(get_link_repository),
 ) -> LinkService:
     return LinkService(code_generator, repository)
-
-
-security = HTTPBearer()
-
-
-async def get_current_user(
-    credentials: HTTPAuthorizationCredentials = Depends(security),
-) -> dict:
-    """Заглушка: возвращает фейкового пользователя по токену."""
-    try:
-        return {
-            "id": "123e4567-e89b-12d3-a456-426614174000",
-            "nickname": "Dimas",
-        }  # заглушка из твоего фронта
-    except Exception:
-        raise HTTPException(status_code=401, detail="Could not validate credentials")

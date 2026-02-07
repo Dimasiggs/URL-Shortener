@@ -59,7 +59,7 @@ class LinkRepository(LinkRepositoryPort):
             .where(Link.short_code == short_code)
             .values(
                 clicks=Link.clicks + 1
-            )  # ← Ключевая часть: используем выражение из модели
+            )
             .returning(Link)
         )
 
