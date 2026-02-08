@@ -10,6 +10,9 @@ from alembic import context
 
 from src.database import Base
 
+from src.users.models import User  # noqa
+from src.links.models import Link  # noqa
+
 # Путь к корню проекта: .../URL-Shortener
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 if BASE_DIR not in sys.path:

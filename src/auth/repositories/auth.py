@@ -63,3 +63,14 @@ class AuthRepository(AuthRepositoryPort):
         user = res.scalars().one()
 
         return user.salt
+    
+    async def get_name(self, user_id: UUID) -> str:
+        query = (
+            select(User)
+            .where(User.id == user_id)
+        )
+        res = await self.session.execute(query)
+        
+        user = res.scalars().one()
+
+        return user.nickname

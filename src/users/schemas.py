@@ -17,6 +17,7 @@ class UserSchemaAdd(BaseModel):
 
     nickname: str
     hashed_password: str
+    salt: str
 
 
 class UserAuthenticationRequest(BaseModel):

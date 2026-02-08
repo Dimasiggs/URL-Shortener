@@ -58,17 +58,15 @@ async def get_auth_service(
 # TODO: Перенести в папку user
 async def get_current_user(
     credentials: HTTPAuthorizationCredentials = Depends(security),
-    jwt_util: JWTServicePort = Depends(get_jwt_service)
+    jwt_util: JWTServicePort = Depends(get_jwt_service),
+    auth_repo: AuthRepositoryPort = Depends(get_auth_repository)
 ) -> dict:
-    """Заглушка: возвращает фейкового пользователя по токену."""
-    """Получение текущего пользователя"""
+    """Получение id текущего пользователя"""
     try:
-        print(credentials)
-        print(credentials.credentials)
         a = jwt_util.decode(JWTToken(access_token=credentials.credentials))
 
-        print(a)
+        nickname = await auth_repo.get_name(a.id)
 
-        return {"id": a.id}  # заглушка
+        return {"id": a.id, "nickname": nickname}
     except Exception:
         raise HTTPException(status_code=401, detail="Could not validate credentials")

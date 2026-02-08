@@ -28,7 +28,15 @@ class User(Base):
         String(300), nullable=False, unique=True
     )
 
-    hashed_password: Mapped[Optional[str]] = mapped_column(String(300), nullable=False)
+    hashed_password: Mapped[Optional[str]] = mapped_column(
+        String(300), 
+        nullable=False
+    )
+
+    salt: Mapped[Optional[str]] = mapped_column(
+        String(100),
+        nullable=False
+    )
 
     role: Mapped[Optional[str]] = mapped_column(
         String(50), nullable=True, default=UserRoleEnum.USER.value
