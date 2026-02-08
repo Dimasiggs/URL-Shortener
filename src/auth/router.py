@@ -56,5 +56,5 @@ async def me(current_user: dict = Depends(get_current_user)):
 
     return UserMeResponse(
         id=current_user["id"],
-        nickname="test",  # из БД или сессии
+        nickname=current_user["nickname"],
     )
