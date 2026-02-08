@@ -15,7 +15,7 @@ class AuthRepository(AuthRepositoryPort):
         self.session = session
 
     async def add_user(self, user: UserSchemaAdd) -> User:
-        db_user = User(nickname=user.nickname, hashed_password=user.hashed_password)
+        db_user = User(nickname=user.nickname, hashed_password=user.hashed_password, salt=user.salt)
         self.session.add(db_user)
 
         try:
@@ -41,3 +41,25 @@ class AuthRepository(AuthRepositoryPort):
         user = res.scalars().one()
 
         return user.id
+
+    async def get_user_hashed_password(self, user_id: UUID) -> str:
+        query = (
+            select(User)
+            .where(User.id == user_id)
+        )
+        res = await self.session.execute(query)
+        
+        user = res.scalars().one()
+
+        return user.hashed_password
+
+    async def get_user_salt(self, user_id: UUID) -> str:
+        query = (
+            select(User)
+            .where(User.id == user_id)
+        )
+        res = await self.session.execute(query)
+        
+        user = res.scalars().one()
+
+        return user.salt
