@@ -13,10 +13,10 @@ from src.links.interfaces import LinkServicePort
 from src.links.exceptions import DuplicateCodeError
 
 
-router = APIRouter(tags=["Links"])
+router = APIRouter(prefix="/links", tags=["Links"])
 
 
-@router.get("/links", response_model=LinksListResponse, status_code=status.HTTP_200_OK)
+@router.get("", response_model=LinksListResponse, status_code=status.HTTP_200_OK)
 async def get_links(
     current_user: dict = Depends(get_current_user),
     page: int = Query(1, ge=1),
@@ -31,7 +31,7 @@ async def get_links(
 
 
 @router.post(
-    "/links", response_model=LinkSchemaFull, status_code=status.HTTP_201_CREATED
+    "", response_model=LinkSchemaFull, status_code=status.HTTP_201_CREATED
 )
 async def create_link(
     link: LinkSchemaAddResponse,
@@ -57,7 +57,7 @@ async def create_link(
         raise ValueError("Short code already in use")
 
 
-@router.delete("/links/{link_id}", status_code=status.HTTP_202_ACCEPTED)
+@router.delete("/{link_id}", status_code=status.HTTP_202_ACCEPTED)
 async def delete_link(
     link_id: uuid.UUID,
     current_user: dict = Depends(get_current_user),
@@ -65,3 +65,9 @@ async def delete_link(
 ):
     print(link_id)
     await link_service.delete_by_id(link_id)
+
+
+
+@router.get("/{link_id}", status_code=status.HTTP_200_OK)
+async def get_link_info():
+    ...
