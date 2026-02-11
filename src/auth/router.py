@@ -33,14 +33,15 @@ async def login(
     status_code=status.HTTP_201_CREATED,
 )
 async def register(
-    user: UserAuthenticationRequest, auth_service: AuthServicePort = Depends(get_auth_service)
+    user: UserAuthenticationRequest,
+    auth_service: AuthServicePort = Depends(get_auth_service)
 ):
-    print(UserAuthenticationRequest)
+    print(user)
     try:
         result = await auth_service.register(user)
         print(result)
 
-        r = UserAuthenticationResponse(token="token", refresh_token="refresh_token")
+        r = UserAuthenticationResponse(token="token", refresh_token="refresh_token")  # TODO
         return r
 
     except UserAlreadyExistsError:

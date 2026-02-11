@@ -27,9 +27,12 @@ class AuthService(AuthServicePort):
 
     async def login(self, user: UserAuthenticationRequest) -> UserAuthenticationResponse:
         user_id = await self.auth_repository.get_id_by_name(user.nickname)
-        
+        print(user.nickname)
+        print(user_id)
         salt = await self.auth_repository.get_user_salt(user_id)
+        print(salt)
         hashed_password = await self.auth_repository.get_user_hashed_password(user_id)
+        print(hashed_password)
         
         if not self.hasher.verify(user.password, salt, hashed_password):
             raise IncorrectPassword("Пароли то самое") 

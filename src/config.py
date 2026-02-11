@@ -12,10 +12,10 @@ load_dotenv(override=True)
 class Settings:
     APP_VERSION: str = "0.0.1"
 
-    POSTGRES_SERVER: str = os.getenv("POSTGRES_SERVER", "localhost")
+    POSTGRES_SERVER: str = os.getenv("POSTGRES_SERVER", "postgres")
     POSTGRES_USER: str = os.getenv("POSTGRES_USER", "postgres")
     POSTGRES_PASSWORD: str = os.getenv("POSTGRES_PASSWORD", "postgres")
-    POSTGRES_DB: str = os.getenv("POSTGRES_DB", "fastapi_db")
+    POSTGRES_NAME: str = os.getenv("POSTGRES_NAME", "fastapi_db")
 
     DATABASE_URL: str = os.getenv(
         "DATABASE_URL",

@@ -29,7 +29,7 @@ dmypy.json
 *.swo
 
 # Env
-.env
+# .env
 .env.local
 secrets/
 

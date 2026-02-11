@@ -1,7 +1,9 @@
+from datetime import datetime
 from fastapi import APIRouter, Depends, Query, status
 import uuid
 
 from src.links.schemas import (
+    LinkStatsResponse,
     LinksListResponse,
     LinkSchemaFull,
     LinkSchemaAddResponse,
@@ -23,8 +25,6 @@ async def get_links(
     limit: int = Query(1, le=100),
     link_service: LinkServicePort = Depends(get_link_service),
 ):
-    print("/links")
-    print(current_user["id"])
     links = await link_service.get_by_user_id(current_user["id"], limit, page - 1)
 
     return links
@@ -63,11 +63,29 @@ async def delete_link(
     current_user: dict = Depends(get_current_user),
     link_service: LinkServicePort = Depends(get_link_service),
 ):
-    print(link_id)
     await link_service.delete_by_id(link_id)
 
 
+@router.get("/{link_id}/stats", response_model=LinkStatsResponse, status_code=status.HTTP_200_OK)
+async def get_link_info(
+    link_id: uuid.UUID,
+    current_user: dict = Depends(get_current_user),
+    link_service: LinkServicePort = Depends(get_link_service),
+):
+    return LinkStatsResponse(total_clicks=10, unique_ips=2, top_countries=[{"country": "Russia", "count": 100}, {"country": "USA", "count": 200}], clicks_per_day=[{"date": "2025-02-10", "count": 10}, {"date": "2026-02-10", "count": 20}, {"date": "2027-02-10", "count": 30}])
 
-@router.get("/{link_id}", status_code=status.HTTP_200_OK)
-async def get_link_info():
-    ...
+
+
+
+
+# Clicks:
+# id: uuid
+# user_ip: str
+# country: str
+# 
+# 
+# 
+# 
+# 
+# 
+# 

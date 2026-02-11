@@ -3,6 +3,8 @@ from os import urandom
 from datetime import datetime, timedelta, timezone
 import jwt
 
+
+from src.config import settings
 from src.utils import singleton
 
 from src.auth.interfaces import HasherPort
@@ -40,7 +42,7 @@ class JWTService(JWTServicePort):
         self.exp_minutes = exp_minutes
 
     def encode(self, user: UserSchemaBase) -> JWTToken:
-        expire = datetime.now(timezone.utc) + timedelta(minutes=15)
+        expire = datetime.now(timezone.utc) + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
         to_encode = {"id": str(user.id), "exp": expire}
 
         encoded_jwt = jwt.encode(to_encode, self.secret_key, algorithm=self.alg)

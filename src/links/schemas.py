@@ -67,3 +67,12 @@ class LinkResponse(BaseModel):
 class LinksListResponse(BaseModel):
     items: List[LinkSchemaFull]
     total: int
+
+
+
+class LinkStatsResponse(BaseModel):
+    total_clicks: int
+    unique_ips: int
+    # shortCode: str
+    top_countries: list
+    clicks_per_day: list
