@@ -9,7 +9,7 @@ from src.links.interfaces import CodeGeneratorPort
 
 from src.links.repositories import LinkRepository
 
-from src.links.services.services import LinkService
+from src.links.services import LinkService
 
 
 # TODO: Убрать отсюда

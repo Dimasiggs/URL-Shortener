@@ -3,7 +3,7 @@ from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from dotenv import load_dotenv
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.auth.schemas.token import JWTToken
+from src.auth.schemas import JWTToken
 from src.auth.services import AuthService
 from src.auth.utils import Hasher
 from src.auth.utils import JWTService
@@ -13,7 +13,7 @@ from src.auth.interfaces import HasherPort
 from src.auth.interfaces import AuthRepositoryPort
 from src.auth.interfaces import JWTServicePort
 
-from src.auth.repositories.auth import AuthRepository
+from src.auth.repositories import AuthRepository
 
 from src.database import get_session
 

@@ -8,7 +8,7 @@ from src.users.schemas import (
     UserAuthenticationRequest,
     UserSchemaBase,
 )
-from src.auth.schemas.token import JWTToken
+from src.auth.schemas import JWTToken
 
 from src.users.models import User
 

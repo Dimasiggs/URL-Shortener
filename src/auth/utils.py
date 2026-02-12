@@ -11,7 +11,7 @@ from src.auth.interfaces import HasherPort
 from src.auth.interfaces import JWTServicePort
 
 from src.users.schemas import UserSchemaBase
-from src.auth.schemas.token import JWTToken
+from src.auth.schemas import JWTToken
 
 
 @singleton
