@@ -10,7 +10,7 @@ class AuthService(AuthServicePort):
         self.auth_repository = auth_repository
         self.jwt_util = jwt_util
 
-    async def register(self, user: UserAuthenticationRequest) -> User:
+    async def register(self, user: UserAuthenticationRequest) -> UserAuthenticationResponse:
 
         salt = self.hasher.salt
         hashed_password = self.hasher.encode(user.password, salt)
@@ -23,16 +23,14 @@ class AuthService(AuthServicePort):
 
         user_model = await self.auth_repository.add_user(add_user)
 
-        return user_model
+        jwt_token = self.jwt_util.encode(UserSchemaBase(id=user_model.id))
+
+        return UserAuthenticationResponse(token=jwt_token.access_token, refresh_token="lol")
 
     async def login(self, user: UserAuthenticationRequest) -> UserAuthenticationResponse:
         user_id = await self.auth_repository.get_id_by_name(user.nickname)
-        print(user.nickname)
-        print(user_id)
         salt = await self.auth_repository.get_user_salt(user_id)
-        print(salt)
         hashed_password = await self.auth_repository.get_user_hashed_password(user_id)
-        print(hashed_password)
         
         if not self.hasher.verify(user.password, salt, hashed_password):
             raise IncorrectPassword("Пароли то самое") 

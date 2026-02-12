@@ -36,13 +36,10 @@ async def register(
     user: UserAuthenticationRequest,
     auth_service: AuthServicePort = Depends(get_auth_service)
 ):
-    print(user)
     try:
         result = await auth_service.register(user)
-        print(result)
 
-        r = UserAuthenticationResponse(token="token", refresh_token="refresh_token")  # TODO
-        return r
+        return UserAuthenticationResponse(token=result.token, refresh_token=result.refresh_token)
 
     except UserAlreadyExistsError:
         raise HTTPException(
