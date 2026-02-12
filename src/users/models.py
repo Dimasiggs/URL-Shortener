@@ -7,7 +7,7 @@ from sqlalchemy.orm import Mapped, mapped_column
 import uuid
 
 from src.database import Base
-from src.users.schemas import UserSchemaBase
+from src.users.schemas import UserSchemaBase, UserSchemaFull
 
 
 class UserRoleEnum(StrEnum):
@@ -54,7 +54,7 @@ class User(Base):
 
     def to_read_model(self) -> UserSchemaBase:
         """Возвращает UserSchema из модели."""
-        return UserSchemaBase(
+        return UserSchemaFull(
             id=self.id,
             nickname=self.nickname,
         )

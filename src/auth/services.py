@@ -1,6 +1,5 @@
 from src.auth.interfaces import HasherPort, AuthRepositoryPort, AuthServicePort, JWTServicePort
-from src.users.schemas import UserAuthenticationRequest, UserSchemaAdd, UserAuthenticationResponse, UserSchemaBase
-from src.users.models import User
+from src.users.schemas import UserAuthenticationRequest, UserAuthenticationResponse
 from src.auth.exceptions import IncorrectPassword
 
 
@@ -15,17 +14,11 @@ class AuthService(AuthServicePort):
         salt = self.hasher.salt
         hashed_password = self.hasher.encode(user.password, salt)
 
-        add_user = UserSchemaAdd(
-            nickname=user.nickname,
-            hashed_password=hashed_password,
-            salt=salt
-        )
+        user_id = await self.auth_repository.add_user(user.nickname, hashed_password, salt)
 
-        user_model = await self.auth_repository.add_user(add_user)
+        jwt_token = self.jwt_util.encode(user_id)
 
-        jwt_token = self.jwt_util.encode(UserSchemaBase(id=user_model.id))
-
-        return UserAuthenticationResponse(token=jwt_token.access_token, refresh_token="lol")
+        return UserAuthenticationResponse(token=jwt_token, refresh_token="lol")
 
     async def login(self, user: UserAuthenticationRequest) -> UserAuthenticationResponse:
         user_id = await self.auth_repository.get_id_by_name(user.nickname)
@@ -36,6 +29,6 @@ class AuthService(AuthServicePort):
             raise IncorrectPassword("Пароли то самое") 
         
         
-        jwt_token = self.jwt_util.encode(UserSchemaBase(id=user_id))
+        jwt_token = self.jwt_util.encode(user_id)
 
-        return UserAuthenticationResponse(token=jwt_token.access_token, refresh_token="lol")
+        return UserAuthenticationResponse(token=jwt_token, refresh_token="lol")

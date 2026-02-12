@@ -12,6 +12,14 @@ class UserSchemaBase(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
 
+class UserSchemaFull(UserSchemaBase):
+    """Полная схема пользователя"""
+    nickname: str
+    hashed_password: str
+    salt: str
+    role: str
+
+
 class UserSchemaAdd(BaseModel):
     """Схема для добавления пользователей."""
 

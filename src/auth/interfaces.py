@@ -3,20 +3,14 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from uuid import UUID
 
 from src.users.schemas import (
-    UserSchemaAdd,
     UserAuthenticationResponse,
     UserAuthenticationRequest,
-    UserSchemaBase,
 )
-from src.auth.schemas import JWTToken
-
-from src.users.models import User
 
 
 class AuthRepositoryPort(Protocol):
     def __init__(self, session: AsyncSession) -> None: ...
-    async def add_user(self, user: UserSchemaAdd) -> User: ...
-    async def login(self, user: UserSchemaAdd) -> UserAuthenticationResponse: ...
+    async def add_user(self, nickname: str, hashed_password: str, salt: str) -> UUID: ...
     async def get_id_by_name(self, user_nickname: str) -> UUID: ...
     async def get_user_hashed_password(self, user_id: UUID) -> str: ...
     async def get_user_salt(self, user_id: UUID) -> str: ...
@@ -43,5 +37,20 @@ class JWTServicePort(Protocol):
     secret_key: str
     exp_minutes: str
 
-    def encode(self, user: UserSchemaBase) -> JWTToken: ...
-    def decode(self, token: JWTToken) -> UserSchemaBase: ...
+    def encode(self, user_id: UUID) -> str:
+        """
+        Docstring for encode
+        
+        :return: 
+        :rtype: str
+        """
+        ...
+
+    def decode(self, access_token: str) -> dict:
+        """
+        Docstring for decode
+        
+        :return: {"id": str, "exp": int}
+        :rtype: dict
+        """
+        ...
