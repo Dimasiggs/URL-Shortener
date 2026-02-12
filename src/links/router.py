@@ -37,8 +37,6 @@ async def create_link(
     current_user: dict = Depends(get_current_user),
     link_service: LinkServicePort = Depends(get_link_service),
 ):
-    # print(link) # original_url='http://localhost:8000/index.html' short_code='slug' expires_at=datetime.datetime(2222, 2, 22, 22, 22)
-
     short_code = link.short_code
     if short_code is None:
         short_code = link_service.code_generator.generate()
@@ -72,19 +70,3 @@ async def get_link_info(
     link_service: LinkServicePort = Depends(get_link_service),
 ):
     return LinkStatsResponse(total_clicks=10, unique_ips=2, top_countries=[{"country": "Russia", "count": 100}, {"country": "USA", "count": 200}], clicks_per_day=[{"date": "2025-02-10", "count": 10}, {"date": "2026-02-10", "count": 20}, {"date": "2027-02-10", "count": 30}])
-
-
-
-
-
-# Clicks:
-# id: uuid
-# user_ip: str
-# country: str
-# 
-# 
-# 
-# 
-# 
-# 
-# 
